@@ -1,16 +1,31 @@
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
-import { useLoaderData, useParams } from 'react-router-dom';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 
 const Update = () => {
     const userData = useLoaderData();
+    const navigate = useNavigate();
     const handleUpdate = (event) => {
         event.preventDefault();
         const form = event.target;
         const name = form.name.value;
         const email = form.email.value;
-        const password = form.password.value;
-        const user = { name, email, password }
-        console.log("client site", user)
+        const user = { name, email }
+        console.log(user);
+        fetch(`http://localhost:5000/users/${userData._id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(user),
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                if (data?.modifiedCount > 0) {
+                    alert("successfull data Update")
+                    navigate('/datafind')
+                }
+            })
     }
     return (
         <Container>
